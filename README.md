@@ -8,7 +8,7 @@
 - Deploy a kubernetes as a service
 - Expose the service behind a firewall
 - Scale up pods
-- Update the container image
+- Update the container image (requires rebuilding and re-pushing docker with a new tag)
 - Clean up
 
 ```
@@ -28,8 +28,15 @@ $ kubectl expose deployment container-name --type=LoadBalancer --port 80 --targe
 $ kubectl get service
 $ kubectl get pods
 $ kubectl scale deployment container-name --replicas=3
-$ kubectl set image deployment/container-name container-name=gcr.io/${PROJECT_ID}/container-name
+
+
+$ docker build -t gcr.io/${PROJECT_ID}/container-name:v2 .
+$ docker push gcr.io/${PROJECT_ID}/container-name:v2
+$ kubectl set image deployment/container-name container-name=gcr.io/${PROJECT_ID}/container-name:v2
 $ kubectl delete service container-name
 $ gcloud container clusters delete container-name
 
 ```
+
+
+### Note: Interally, Kubernetes uses manifest yaml files to deploy. This gcloud sdk method skips that and does it automatically for you. One thing to note is that in order to update the deployment with an image, the manifest has to register a new tag, which it will only do if the docker container is re-built and re-pushed with a new tag. 
