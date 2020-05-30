@@ -37,4 +37,4 @@ RUN npm i --no-optional && npm cache clean --force
 ENV PATH /usr/src/node_modules/.bin:$PATH
 WORKDIR /usr/src/app
 COPY ./ ./ 
-CMD npm start
+ENTRYPOINT [ "npm", "start" ]
